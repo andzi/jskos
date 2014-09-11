@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de_DE">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Jakob Voß" />
+  <meta name="date" content="2014-09-11" />
+  <title>JSKOS data format for knowledge organization systems</title>
+   <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <style type="text/css">
+/*<![CDATA[*/
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+/*]]>*/
+  </style>
+  <style type="text/css">
+  body { font-family: sans-serif; }
+  a { text-decoration: none }
+  a:hover { text-decoration: underline }
+  h1 { font: 170% sans-serif }
+  h1.title { font-size: 200%; font-weight: bold; }
+  h2 { font: 140% sans-serif }
+  h3 { font: 120% sans-serif }
+  dt { font-weight: bold; }
+  h1, h2, h3, h1 a, h2 a, h3 a { color: #005A9C; }
+  table { border-collapse: collapse; }
+  td { border: 1px solid #999; padding: 3px }
+  dl p { margin-top: 0; }
+  dt { margin-top: 0.8em; }
+  dd { margin-left: 1.5em; }
+  ol { margin-bottom: 1em; }
+  table + p { margin-top: 1em; }
+  </style>
+</head>
+<body>
+<a href="https://github.com/gbv/jskos"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+<header>
+<h1 class="title">JSKOS data format for knowledge organization systems</h1>
+<h3 class="author">Jakob Voß</h3>
+<h4 class="date">2014-09-11 (version 0.01)</h4>
+</header>
+
+<h1>Table of Contents</h1>
+<nav id="TOC">
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#concepts"><span class="toc-section-number">2</span> Concepts</a></li>
+<li><a href="#concept-schemes"><span class="toc-section-number">3</span> Concept Schemes</a></li>
+<li><a href="#mappings"><span class="toc-section-number">4</span> Mappings</a></li>
+<li><a href="#integrity-rules"><span class="toc-section-number">5</span> Integrity rules</a></li>
+</ul>
+</nav>
+<section id="introduction" class="level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p><strong>JSKOS</strong> defines a JSON structure to encode simple knowledge organization systems, such as classifications and thesauri. The data format can be mapped from and to <a href="http://www.w3.org/2004/02/skos/">RDF/SKOS</a> for most instances but not all features of SKOS are supported.</p>
+<p>JSKOS is currently being developed as part of <a href="http://gbv.github.io/ng-skos/">ng-skos</a> but it can be used independently. Why JSKOS? Because RDF is good for exchange, aggregation, combination, and modeling but not for processing in web applications.</p>
+<p>In short, JSKOS consists of <a href="#concepts">concepts</a>, <a href="#concept-schemes">concept schemes</a>, and <a href="#mappings">mappings</a>. Concept collections for grouping and sorted concepts are not supported (yet?).</p>
+<p>The specification is hosted at <a href="http://jakobib.github.io/makespec/">http://jakobib.github.io/makespec/</a> in the public GitHub repository <a href="https://github.com/gbv/jskos">https://github.com/gbv/jskos</a>. Feedback is appreciated!</p>
+</section>
+<section id="concepts" class="level1">
+<h1><span class="header-section-number">2</span> Concepts</h1>
+<p>A <strong>concept</strong> represents a <a href="http://www.w3.org/TR/skos-primer/#secconcept">SKOS Concept</a>. A concept is a JSON object with the following keys:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: left;">definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">uri</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">URI of the concept</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">notation</td>
+<td style="text-align: left;">array of strings</td>
+<td style="text-align: left;">list of notations</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">prefLabel</td>
+<td style="text-align: left;">object of strings</td>
+<td style="text-align: left;">preferred concept labels, index by language</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">altLabel</td>
+<td style="text-align: left;">object of arrays of strings</td>
+<td style="text-align: left;">alternative concept labels, indexed by language</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">narrower</td>
+<td style="text-align: left;">boolean or array of objects</td>
+<td style="text-align: left;">narrower concepts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">broader</td>
+<td style="text-align: left;">boolean or array of objects</td>
+<td style="text-align: left;">broader concepts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">related</td>
+<td style="text-align: left;">boolean or array of objects</td>
+<td style="text-align: left;">related concepts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ancestors</td>
+<td style="text-align: left;">boolean or array of objects</td>
+<td style="text-align: left;">list of ancestors, possibly up to a top concept</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">inScheme</td>
+<td style="text-align: left;">string or object</td>
+<td style="text-align: left;"><a href="#concept-schemes">concept scheme</a> or URI of the concept scheme</td>
+</tr>
+</tbody>
+</table>
+<p>All keys are optional, so the empty object <code>{}</code> is a valid concept.</p>
+<p>The “ancestors” field only makes sense monohierarchical classifications but it’s not forbidden to choose jus one arbitrary path of concepts that are connected by the narrower relation.</p>
+<p><strong>Example:</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span>
+  <span class="dt">&quot;uri&quot;</span><span class="fu">:</span> <span class="st">&quot;http://example.org/terminology/P&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;prefLabel&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;en&quot;</span><span class="fu">:</span> <span class="st">&quot;peace&quot;</span><span class="fu">,</span>
+    <span class="dt">&quot;de&quot;</span><span class="fu">:</span> <span class="st">&quot;Frieden&quot;</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;altLabel&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;de&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;Friede&quot;</span><span class="ot">]</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;notation&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;P&quot;</span><span class="ot">]</span><span class="fu">,</span>
+  <span class="dt">&quot;narrower&quot;</span><span class="fu">:</span> <span class="ot">[</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;prefLabel&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+        <span class="dt">&quot;en&quot;</span><span class="fu">:</span> <span class="st">&quot;world peace&quot;</span><span class="fu">,</span>
+        <span class="dt">&quot;de&quot;</span><span class="fu">:</span> <span class="st">&quot;Weltfrieden&quot;</span>
+      <span class="fu">}</span> 
+    <span class="fu">}</span>
+  <span class="ot">]</span><span class="fu">,</span>
+  <span class="dt">&quot;related&quot;</span><span class="fu">:</span> <span class="ot">[</span>
+    <span class="fu">{</span> 
+      <span class="dt">&quot;prefLabel&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;en&quot;</span><span class="fu">:</span> <span class="st">&quot;war&quot;</span><span class="fu">,</span> <span class="dt">&quot;de&quot;</span><span class="fu">:</span> <span class="st">&quot;Krieg&quot;</span> <span class="fu">}</span> 
+    <span class="fu">}</span>
+  <span class="ot">]</span>
+<span class="fu">}</span></code></pre>
+<p>The order of alternative labels with same language and the order of narrower, broader, or related concepts is irrelevant.</p>
+<p>Applications may use empty arrays (<code>[]</code>) and boolean values (<code>true</code> and <code>false</code>) to indicate the known absence or existence of a property in the following cases:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>{ &quot;notation&quot;: [ ] }</code></td>
+<td style="text-align: left;">concept has no notations</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>{ }</code> (no “notation” key)</td>
+<td style="text-align: left;">concept may have notations (unknown)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>{ &quot;prefLabel&quot;: { } }</code></td>
+<td style="text-align: left;">concept has no preferred labels</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>{ }</code> (no “prefLabel” key)</td>
+<td style="text-align: left;">concept may have preferred labels (unknown)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>{ &quot;narrower&quot;: false }</code></td>
+<td style="text-align: left;">no narrower concepts exist</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>{ &quot;narrower&quot;: [ ] }</code></td>
+<td style="text-align: left;">no narrower concepts exist</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>{ &quot;narrower&quot;: true }</code></td>
+<td style="text-align: left;">narrower concept exist but are not known</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>{ }</code> (no “narrower” key)</td>
+<td style="text-align: left;">narrower concepts may exist (unknown)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">same for “broader”, “related”, and “ancestors”</td>
+</tr>
+</tbody>
+</table>
+<p>It is not possible to indicate the existence of an unknown URI, unknown preferred labels, and an unknown concept scheme. The following is <strong>not allowed</strong>:</p>
+<pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span>
+  <span class="dt">&quot;uri&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span>
+  <span class="dt">&quot;prefLabel&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;en&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span> <span class="dt">&quot;es&quot;</span><span class="fu">:</span> <span class="kw">true</span> <span class="fu">},</span>
+  <span class="dt">&quot;altLabel&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;en&quot;</span><span class="fu">:</span> <span class="ot">[]</span> <span class="fu">},</span>
+  <span class="dt">&quot;inScheme&quot;</span><span class="fu">:</span> <span class="kw">true</span>
+<span class="fu">}</span></code></pre>
+</section>
+<section id="concept-schemes" class="level1">
+<h1><span class="header-section-number">3</span> Concept Schemes</h1>
+<p>A <strong>concept scheme</strong> represents a <a href="http://www.w3.org/TR/skos-primer/#secscheme">SKOS Concept Scheme</a>. A concept scheme is a JSON object with the following keys:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: left;">definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">uri</td>
+<td style="text-align: left;">string</td>
+<td style="text-align: left;">URI of the concept scheme</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">notation</td>
+<td style="text-align: left;">array of strings</td>
+<td style="text-align: left;">list of acronyms or notations of the concept scheme</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">prefLabel</td>
+<td style="text-align: left;">object of strings</td>
+<td style="text-align: left;">preferred titles of the concept scheme, index by language</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">altLabel</td>
+<td style="text-align: left;">object of arrays of strings</td>
+<td style="text-align: left;">alternative titles of the concept scheme, indexed by language</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">topConcepts</td>
+<td style="text-align: left;">array of objects</td>
+<td style="text-align: left;">top concepts of the concept scheme</td>
+</tr>
+</tbody>
+</table>
+<p>All keys are optional, so the empty object <code>{}</code> is a valid concept scheme (and also a valid <a href="#concepts">concept</a>).</p>
+</section>
+<section id="mappings" class="level1">
+<h1><span class="header-section-number">4</span> Mappings</h1>
+<p>A <strong>mapping</strong> represents a mapping between <a href="#concepts">concepts</a> of two <a href="#concept-schemes">concept schemes</a>. Mappings are based on <a href="http://www.w3.org/TR/skos-reference/#mapping">SKOS mapping properties</a>.</p>
+<p>…</p>
+</section>
+<section id="integrity-rules" class="level1">
+<h1><span class="header-section-number">5</span> Integrity rules</h1>
+<p>URIs <strong>must</strong> be unique.</p>
+<hr />
+<p>This version: <a href="http://gbv.github.io/jskos/jskos-f8a27d6.html">http://gbv.github.io/jskos/jskos-f8a27d6.html</a> (2014-09-11 11:24:02 +0200)<br />Latest version: <a href="http://gbv.github.io/jskos/">http://gbv.github.io/jskos/</a></p>
+<p>Created with <a href="http://jakobib.github.io/makespec/">makespec</a></p>
+</section>
+</body>
+</html>
