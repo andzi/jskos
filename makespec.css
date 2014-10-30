@@ -5,6 +5,9 @@ body {
     counter-reset: examples;
 }
 
+/* quirks mode fix */
+td {font-size: 100%}
+
 section > pre {
     font-weight: bold;
     background-color: #ddd;
